@@ -1,0 +1,139 @@
+Project Overview
+
+This project provides an API service built using FastAPI that allows users to upload datasets, train machine learning models (classification or regression), and make predictions based on the trained models. It is designed to handle two main types of tasks: classification and regression. Users can upload their datasets, specify the task type and target column, and obtain predictions after training.
+
+Features
+
+Dataset UploadUsers can upload datasets along with task specifications. The dataset is saved and processed for training.
+
+Model TrainingModels are trained on the uploaded dataset based on the specified task type:
+
+Classification: Logistic Regression, Random Forest, Decision Tree
+
+Regression: Linear Regression, Random Forest, Decision TreeThe best-performing model is selected and saved.
+
+PredictionUsers can provide input data to obtain predictions from the trained model. The API validates the input data structure and returns predictions, including confidence scores for classification tasks.
+
+API Endpoints
+
+1. Upload Dataset
+
+Endpoint: /upload
+
+Method: POST
+
+Description: Allows users to upload a dataset for training.
+
+Request Parameters:
+
+user_id (form): User identifier.
+
+task_type (form): Either "classification" or "regression".
+
+output_column (form): Target column for training.
+
+file (form): Dataset file (CSV format).
+
+Response:
+
+message: Upload status.
+
+task_id: Unique identifier for the training task.
+
+query_example: Sample input format.
+
+2. Train Model
+
+Endpoint: /train
+
+Method: POST
+
+Description: Trains models on the uploaded dataset and selects the best-performing model.
+
+Request Parameters:
+
+user_id (form): User identifier.
+
+task_id (form): Task identifier.
+
+Response:
+
+results: Performance metrics of all models tested.
+
+query_example: Input format for predictions.
+
+3. Make Predictions
+
+Endpoint: /predict
+
+Method: POST
+
+Description: Makes predictions using the trained model.
+
+Request Parameters: JSON body containing:
+
+user_id: User identifier.
+
+task_id: Task identifier.
+
+input_data: Input data as a dictionary matching the query example format.
+
+Response:
+
+prediction: Predicted output.
+
+confidence (optional): Confidence score for classification tasks.
+
+Key Components
+
+1. Model Training
+
+The project uses the following models:
+
+Classification: Logistic Regression, Random Forest, Decision Tree
+
+Regression: Linear Regression, Random Forest, Decision TreeThe models are evaluated using appropriate metrics:
+
+Classification: Accuracy, F1 score
+
+Regression: Mean Squared Error (MSE), R² scoreThe best-performing model is saved for each task.
+
+2. Input Validation
+
+During predictions, the input data structure is validated against the expected query format stored during dataset upload.
+
+Mismatched structures result in detailed error responses.
+
+Directory Structure
+
+app/models/: Stores trained models.
+
+app/data/: Contains uploaded datasets.
+
+app/queries.csv: Metadata for tasks and query examples.
+
+Setup Instructions
+
+Install Dependencies:
+
+pip install fastapi uvicorn scikit-learn joblib pandas numpy
+
+Run the Application:
+
+uvicorn main:app --reload
+
+Access API Documentation:Visit http://127.0.0.1:8000/docs for interactive API documentation.
+
+Example Usage
+
+Upload Dataset:
+
+Send a POST request to /upload with a CSV file, task type, and target column.
+
+Train Model:
+
+Call /train with the user and task identifiers returned from the upload step.
+
+Make Predictions:
+
+Use /predict with the task ID and input data matching the query example.
